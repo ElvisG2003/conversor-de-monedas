@@ -3,29 +3,37 @@ package procesos;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.util.Map;
+
 public class Conversor {
-    public void convertir(String json, Moneda moneda, double monto){
+    public String convertir(RespuestaApi datos, Moneda moneda, double monto){
         String monedaFinal = moneda.getMonedaCambio();
         String monedaInicial = moneda.getMonedaUsuario();
-        JsonObject objeto = JsonParser.parseString(json).getAsJsonObject();
-        JsonObject cambio = objeto.getAsJsonObject("conversion_rates");
-        double cambioFinal = cambio.get(monedaFinal).getAsDouble();
+        Map<String, Double> cambio = datos.getConversion_rates();
+
+        if (cambio == null || !cambio.containsKey(monedaFinal)){
+            return "No se encontro la tasa de cambio para "+monedaFinal;
+        }
+        double cambioFinal = cambio.get(monedaFinal);
 
         double resultado = monto * cambioFinal;
 
-        System.out.println("El cambio final de "+monedaInicial+" a "+monedaFinal+" es ="+resultado);
+        return "El cambio final de "+monedaInicial+" a "+monedaFinal+" es ="+resultado;
     }
 
-    public void convetirCambio(String json, Moneda moneda, double monto){
+    public String convertirCambio(RespuestaApi datos, Moneda moneda, double monto){
         String monedaFinal = moneda.getMonedaCambio();
         String monedaInicial = moneda.getMonedaUsuario();
-        JsonObject objeto = JsonParser.parseString(json).getAsJsonObject();
-        JsonObject cambio = objeto.getAsJsonObject("conversion_rates");
-        double cambioFinal = cambio.get(monedaFinal).getAsDouble();
+        Map<String,Double> cambio = datos.getConversion_rates();
+
+        if (cambio == null || !cambio.containsKey(monedaFinal)){
+            return "No se encontro la tasa de cambio para "+monedaFinal;
+        }
+        double cambioFinal = cambio.get(monedaFinal);
 
         double resultado = monto / cambioFinal;
 
-        System.out.println("El cambio final de "+monedaFinal+" a "+monedaInicial+" es ="+resultado);
+        return "El cambio final de "+monedaFinal+" a "+monedaInicial+" es ="+resultado;
     }
 
 

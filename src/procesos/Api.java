@@ -1,18 +1,12 @@
 package procesos;
-
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class Api {
-    public String consultarMoneda(Moneda monedaUsuario){
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
+    public RespuestaApi consultarMoneda(Moneda monedaUsuario){
         String tipoUsuario = monedaUsuario.getMonedaUsuario();
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -23,8 +17,10 @@ public class Api {
             HttpResponse<String> response = client
                     .send(request, HttpResponse.BodyHandlers.ofString());
             String json = response.body();
-            System.out.println(json);
-            return json;
+            //System.out.println(json); // <-- Esta linea sirve para ver que json se este imprimiendo de manera correcta
+            Gson gson = new Gson();
+            RespuestaApi datos = gson.fromJson(json, RespuestaApi.class);
+            return datos;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
